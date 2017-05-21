@@ -1,0 +1,22 @@
+<div style="display: flex; flex: 0 0 100%; flex-direction: row">
+  <div style="margin-left: 20px; display: flex; flex: 1 1; flex-direction: column">
+
+  <div *ngFor="let tileAssets of tileAssetList;">
+    <div style="display: inline-block;" *ngFor="let row of tileRows; let i = index;">
+      <img (click)="setBlock(tileAssets[i])" style="width: 50px; padding-right: 4px" [src]="tileAssets[i].image.src" />
+    </div>
+  </div>
+  <div style="display: flex; flex: 1 1">
+    <input #blockWidth type="range" min="10" max="500" value="0" (change)="setBlockSize(blockWidth.value, 0)">
+  </div>
+  <div>
+    {{blockSize[0]}}
+  </div>
+  <div style="display: flex; flex: 1 1">
+    <input #blockHeight type="range" min="10" max="500" value="0" (change)="setBlockSize(blockHeight.value, 1)">
+  </div>
+    <div>
+    {{blockSize[1]}}
+  </div>
+</div>
+</div>

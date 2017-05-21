@@ -1,0 +1,11 @@
+<div>
+  <div class="aligner">
+    <canvas (click)="addBlock()" #canvas style="border: 1px solid white"></canvas>
+    <div class="aligner-item--top" style="display: flex; flex: 1 1 100%">
+        <app-tile-selector style="display: flex; flex: 1 1 100%" (blockChanged)="block = $event" [tileTextures]="asset.tileTextures"></app-tile-selector>
+    </div>
+  </div>
+  <div class="aligner">
+    x: {{mousePosition[0]}}, y: {{mousePosition[1]}}
+  </div>
+</div>
