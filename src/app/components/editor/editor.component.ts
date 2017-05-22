@@ -5,6 +5,7 @@ import { ResourceService, LevelService } from '../../shared/service';
 import { TileRenderer } from '../../render/tileRenderer';
 import { TileRenderCall, Tile, Rectangle, Asset, TileSet, Block } from '../../shared/model';
 import { RenderHelper } from '../../shared/utils/render-helper';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-editor',
@@ -16,6 +17,7 @@ export class EditorComponent implements OnInit {
   @ViewChild('canvas') canvas: ElementRef;
 
   public block: Block;
+  public gridSize: number;
   public mousePosition: [number, number] = [0, 0];
   private tileRenderer: TileRenderer;
   private context: Context;
@@ -29,7 +31,11 @@ export class EditorComponent implements OnInit {
     this.context = new Context(this.asset, this.resourceService.canvasWidth, this.resourceService.canvasHeight, this.canvas.nativeElement);
 
     this.tileRenderer = new TileRenderer(this.context, this.resourceService);
-    this.render();
+
+    Observable.interval(50).subscribe(() => {
+      this.render();
+    });
+
   }
 
   public render() {
@@ -38,6 +44,10 @@ export class EditorComponent implements OnInit {
     this.levelService.level.tiles.forEach((value: TileSet, key: number) => {
       renderCalls.push(this.getTileTypeRenderCall(key, value));
     });
+
+    if(this.block) {
+      renderCalls.push(this.getCurrentBlockRenderCall());
+    }
 
     this.tileRenderer.render(renderCalls);
   }
@@ -51,23 +61,37 @@ export class EditorComponent implements OnInit {
     }
 
     return renderCall;
+  }
 
+  private getCurrentBlockRenderCall() {
+    let renderCall = new TileRenderCall();
+    renderCall.tileKey = this.block.key;
+    let tile = this.newTile(this.block);
+    this.renderHelper.getTileRenderCoords(renderCall, tile, this.block.textureSize)
+
+    return renderCall;
   }
 
   private addBlock() {
     if (this.block) {
       let tileSet = this.levelService.level.tiles.get(this.block.key);
 
-      let newTile = new Tile(new Rectangle(this.mousePosition[0], this.mousePosition[1], this.block.blockSize[0], this.block.blockSize[1]));
+      let newTile = this.newTile(this.block);
 
       if (tileSet) {
         tileSet.tiles.push(newTile);
       } else {
         this.levelService.level.tiles.set(this.block.key, new TileSet([newTile], this.block.textureSize));
       }
-
-      this.render();
     }
+  }
+
+  private newTile(block: Block) {
+    return new Tile(new Rectangle(this.getClosestGridPos(this.mousePosition[0]), this.getClosestGridPos(this.mousePosition[1]), block.blockSize[0], block.blockSize[1]));
+  }
+
+  private getClosestGridPos(position: number) {
+    return Math.round(position / this.gridSize) * this.gridSize; 
   }
 
   @HostListener('mousemove', ['$event'])

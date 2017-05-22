@@ -1,5 +1,5 @@
 import { Context } from '../shared/context';
-import { SettingsService } from '../shared/service';
+import { ResourceService } from '../shared/service';
 import { TileRenderCall } from '../shared/model';
 
 export class TileRenderer {
@@ -15,7 +15,7 @@ export class TileRenderer {
 	private textureCoordAttribute: number;
 	private resolutionLocation : WebGLUniformLocation;
 
-    constructor(private context: Context, private settingsService: SettingsService) {
+    constructor(private context: Context, private resourceService: ResourceService) {
 		this.gl = this.context.gl;
 		this.shaderProgram = this.context.editorShaderProgram;
 		this.gl.useProgram(this.shaderProgram);
@@ -55,7 +55,7 @@ export class TileRenderer {
 			this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureCoordBuffer);
 			this.gl.vertexAttribPointer(this.textureCoordAttribute, 2, this.gl.FLOAT, false, 0, 0);
 
-			this.gl.uniform2f(this.resolutionLocation, this.settingsService.canvasWidth, this.settingsService.canvasHeight);
+			this.gl.uniform2f(this.resolutionLocation, this.resourceService.canvasWidth, this.resourceService.canvasHeight);
 
 			this.gl.activeTexture(this.gl.TEXTURE0);
 			this.gl.bindTexture(this.gl.TEXTURE_2D, this.context.tileTextures.get(renderCall.tileKey));

@@ -10,11 +10,20 @@ export class TileSelectorComponent implements OnChanges {
 
   @Input() tileTextures: Map<number, TileAsset>;
   @Output() blockChanged = new EventEmitter<Block>();
+  @Output() gridSizeChanged = new EventEmitter<number>();
 
-  public blockSize: [number, number] = [50, 50];
   public tileAssetList: TileAsset[][] = [];
-  private tileRows: number[] = [1, 2];
 
+  public set gridSize(value: number) {
+    this._gridSize = value;
+    this.gridSizeChanged.emit(this._gridSize);
+  }
+
+  public get gridSize() {
+    return this._gridSize;
+  }
+
+  private _gridSize;
 
   private set block(value: Block) {
     this._block = value;
@@ -26,12 +35,16 @@ export class TileSelectorComponent implements OnChanges {
     return this._block;
   }
 
-  private _block: Block; 
+  private _block: Block;
+  private tileCollumns: number[] = [1, 2, 3, 4];
 
 
   constructor() { }
 
   ngOnChanges() {
+
+    this.gridSize = 10;
+    
     if (this.tileTextures) {
     
       let row: TileAsset[] = [];
@@ -46,23 +59,17 @@ export class TileSelectorComponent implements OnChanges {
 
         i++;
 
-        if(i >= this.tileRows.length) {
+        if(i >= this.tileCollumns.length) {
           i = 0;
         } 
       })
+
+      this.block = new Block(this.tileAssetList[0][0].key, this.tileAssetList[0][0].size, [32, 32]);
     }
   }
 
   public setBlock(tile: TileAsset) {
-    this.block = new Block(tile.key, tile.size, [this.blockSize[0], this.blockSize[1]]);
-  }
-
-  public setBlockSize(value: number, index: number) {
-    this.blockSize[index] = +value;
-    if(this.block) {
-      this.block.blockSize[index] = this.blockSize[index];
-    }
-    
+    this.block = new Block(tile.key, tile.size, [this.block.blockSize[0], this.block.blockSize[1]]);
   }
 
 }
