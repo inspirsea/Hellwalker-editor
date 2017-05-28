@@ -2,9 +2,11 @@
   <div class="aligner">
     <canvas (click)="addBlock()" #canvas style="border: 1px solid white"></canvas>
     <div class="aligner-item--top" style="display: flex; flex: 1 1 100%; flex-direction: column">
-        <app-tile-selector style="display: flex; flex: 1 1 100%;" (blockChanged)="block = $event" (gridSizeChanged)="gridSize = $event" [tileTextures]="asset.tileTextures"></app-tile-selector>
+      <app-editor-tools #editortools style="display: flex; flex: 1 1 100%;" (blockChanged)="block = $event" (gridSizeChanged)="gridSize = $event"
+        [tileTextures]="resourceService.asset.tileTextures" [enemyTextures]="resourceService.asset.enemyTextures" [playerTexture]="resourceService.asset.playerTexture" [endTexture]="resourceService.asset.endTexture"></app-editor-tools>
     </div>
-    
   </div>
-  x: {{mousePosition[0]}}, y: {{mousePosition[1]}}
+  <div style="width: 1200px" class="full-flex">
+    <span (click)="export()" style="color: #ed490a;" class="full-flex clickable">Export</span><span class="full-flex">{{mousePosition[0]}}, y: {{mousePosition[1]}}</span> 
+  </div>
 </div>

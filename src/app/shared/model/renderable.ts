@@ -1,6 +1,6 @@
 import { Rectangle } from './';
 
-export class Tile {
+export class Renderable {
     constructor(public area: Rectangle) {
     }
 }

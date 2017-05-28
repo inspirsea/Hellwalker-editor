@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TileSelectorComponent } from './tile-selector.component';
+import { EditorToolsComponent } from './editor-tools.component';
 
 describe('TileSelectorComponent', () => {
-  let component: TileSelectorComponent;
-  let fixture: ComponentFixture<TileSelectorComponent>;
+  let component: EditorToolsComponent;
+  let fixture: ComponentFixture<EditorToolsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TileSelectorComponent ]
+      declarations: [ EditorToolsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TileSelectorComponent);
+    fixture = TestBed.createComponent(EditorToolsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

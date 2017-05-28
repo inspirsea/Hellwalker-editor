@@ -1,0 +1,128 @@
+<div style="display: flex; flex: 1 1; flex-direction: row; margin-left: 10px;">
+  <div class="full-flex" style="flex-direction: column">
+
+    <div *ngFor="let tileAssets of tileTableList;">
+      <div style="display: inline-block;" *ngFor="let row of tileCollumns; let i = index;">
+        <img *ngIf="tileAssets[i]" (click)="setTile(tileAssets[i])" style="width: 50px; height: 50px; padding-right: 4px" [src]="tileAssets[i].image.src"
+        />
+      </div>
+    </div>
+
+    <div *ngFor="let enemyAsset of enemyTableList;">
+      <div style="display: inline-block;" *ngFor="let row of enemyAsset; let i = index;">
+        <img *ngIf="enemyAsset[i]" (click)="setEnemy(enemyAsset[i])" style="width: 50px; height: 50px; padding-right: 4px" [src]="enemyAsset[i].image.src"
+        />
+      </div>
+    </div>
+
+    <div>
+      <img *ngIf="playerAsset" (click)="setPlayer(playerAsset)" style="width: 50px; height: 50px; padding-right: 4px" [src]="playerAsset.image.src"
+      />
+      <img *ngIf="endAsset" (click)="setEnd(endAsset)" style="width: 50px; height: 50px; padding-right: 4px" [src]="endAsset.image.src"
+      />
+    </div>
+
+    <div style="display: flex; flex: 0 0 235px; flex-direction: column;">
+      <div style="display: flex; flex: 1 1; flex-direction: row">
+        <input type="number" class="input-number" [(ngModel)]="block.blockSize[0]" />
+        <input type="range" max="500" [(ngModel)]="block.blockSize[0]" />
+      </div>
+
+      <div style="display: flex; flex: 1 1; flex-direction: row">
+        <input type="number" class="input-number" [(ngModel)]="block.blockSize[1]" />
+        <input type="range" max="500" [(ngModel)]="block.blockSize[1]">
+      </div>
+
+      <div style="padding-top: 5px; display: flex; flex: 1 1; flex-direction: row">
+        <div class="full-flex">
+          Lift
+        </div>
+
+        <div class="full-flex" *ngIf="dynamicTile">
+          Direction
+        </div>
+
+        <div class="full-flex" *ngIf="dynamicTile">
+          Axis
+        </div>
+
+        <div class="full-flex" *ngIf="dynamicTile">
+          Distance
+        </div>
+
+        <div class="full-flex" *ngIf="dynamicTile">
+          Velocity
+        </div>
+      </div>
+
+      <div style="display: flex; flex: 1 1; flex-direction: row">
+
+        <div class="squaredThree full-flex">
+          <input type="checkbox" id="squaredThree" [(ngModel)]="dynamicTile" />
+          <label for="squaredThree"></label>
+        </div>
+
+        <div class="squaredThree full-flex" *ngIf="dynamicTile">
+          <input type="checkbox" id="direction" [(ngModel)]="block.inverted" />
+          <label for="direction"></label>
+          <span *ngIf="!block.inverted" style="padding-left: 5px">Not inverted</span>
+          <span *ngIf="block.inverted" style="padding-left: 5px">Inverted</span>
+        </div>
+
+        <div class="squaredThree full-flex" *ngIf="dynamicTile">
+          <input type="checkbox" id="axis" [(ngModel)]="block.vertical" />
+          <label for="axis"></label>
+          <span *ngIf="block.vertical" style="padding-left: 5px">Vertical</span>
+          <span *ngIf="!block.vertical" style="padding-left: 5px">Horizontal</span>
+        </div>
+
+        <div style="display: flex; flex: 1 1; flex-direction: row" *ngIf="dynamicTile">
+          <input type="number" class="input-number" [(ngModel)]="block.distance" />
+          <input type="range" min="100" max="1000" [(ngModel)]="block.distance">
+        </div>
+
+        <div style="display: flex; flex: 1 1; flex-direction: row" *ngIf="dynamicTile">
+          <input type="number" class="input-number" [(ngModel)]="block.velocity" />
+          <input type="range" step="0.1" min="0.1" max="1" [(ngModel)]="block.velocity">
+        </div>
+
+      </div>
+
+      <div style="border-top: 1px solid;"></div>
+
+      <div style="display: flex; flex: 1 1; flex-direction: row">
+        <div class="full-flex" style="font-size: 18px; font-weight: bold">
+          Gridsize
+        </div>
+        <div class="full-flex" style="font-size: 18px; font-weight: bold">
+          Gamewidth
+        </div>
+        <div class="full-flex" style="font-size: 18px; font-weight: bold">
+          Gameheight
+        </div>
+      </div>
+
+      <div style="display: flex; flex: 1 1; flex-direction: row">
+        <div class="full-flex">
+          <input type="number" class="input-number" [(ngModel)]="gridSize" />
+        </div>
+
+        <div class="full-flex">
+          <input type="number" class="input-number-large" (keyup)="renderOverview()" (change)="renderOverview()" [(ngModel)]="resourceService.gameSize[0]"
+          />
+        </div>
+
+        <div class="full-flex">
+          <input type="number" class="input-number-large" (keyup)="renderOverview()" (change)="renderOverview()" [(ngModel)]="resourceService.gameSize[1]"
+          />
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-left: -10px; display: flex; flex: 1 1; flex-direction: row">
+      <app-overview #overview class="full-flex"></app-overview>
+    </div>
+
+  </div>
+</div>

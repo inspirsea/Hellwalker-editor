@@ -9,6 +9,11 @@ export class AssetResolve implements Resolve<Asset> {
   constructor(private assetLoaderService: AssetLoaderService,  private resourceService: ResourceService) {}
 
   resolve(route: ActivatedRouteSnapshot) {
-    return this.assetLoaderService.getAsset(this.resourceService.textureResources);
+    return this.assetLoaderService.getAsset(
+           this.resourceService.textureResources,
+           this.resourceService.editorUtilTextures,
+           this.resourceService.enemyTextureResources,
+           this.resourceService.playerResource,
+           this.resourceService.endResource);
   }
 }

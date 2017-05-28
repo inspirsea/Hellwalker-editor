@@ -1,5 +1,11 @@
-import { TileSet } from './';
+import { RenderableSet, DynamicRenderableSet } from './';
 
 export class Level {
-    public tiles: Map<number, TileSet> = new Map<number, TileSet>();
+    public name: string;
+    public key: number;
+    public tiles: Map<number, RenderableSet> = new Map<number, RenderableSet>();
+    public dynamicTiles: Map<number, DynamicRenderableSet> = new Map<number, DynamicRenderableSet>();
+    public enemies: Map<number, RenderableSet> = new Map<number, RenderableSet>();
+    public player: Map<number, RenderableSet> = new Map<number, RenderableSet>();
+    public end: Map<number, RenderableSet> = new Map<number, RenderableSet>();
 }

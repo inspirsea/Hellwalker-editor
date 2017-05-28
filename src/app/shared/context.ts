@@ -1,5 +1,5 @@
 import { Observable, Subscription, Observer } from 'rxjs';
-import { ShaderType, Asset, TileAsset } from '../shared/model';
+import { ShaderType, Asset, RenderableAsset } from '../shared/model';
 
 export class Context {
 	public editorShaderProgram: WebGLProgram;
@@ -36,27 +36,35 @@ export class Context {
 			alert("Unable to initialize the shader program: " + this.gl.getProgramInfoLog(this.editorShaderProgram));
 		}
 
-		this.initTextures(this.gl, asset);
+		this.initAssetTextures(this.gl, asset);
 	}
 
-	private initTextures(gl: WebGLRenderingContext, asset: Asset) {
+	private initAssetTextures(gl: WebGLRenderingContext, asset: Asset) {
 
-		asset.tileTextures.forEach((tileAsset: TileAsset, key: number) => {
+		this.initTextures(gl, asset.tileTextures);
+		this.initTextures(gl, asset.editorTextures);
+		this.initTextures(gl, asset.enemyTextures);
+		this.initTextures(gl, asset.playerTexture);
+		this.initTextures(gl, asset.endTexture);
+
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+		gl.enable(gl.BLEND);
+
+	}
+
+	private initTextures(gl: WebGLRenderingContext, textureMap: Map<number, RenderableAsset>) {
+		textureMap.forEach((tileAsset: RenderableAsset, key: number) => {
 
 			let texture = gl.createTexture();
 			gl.bindTexture(gl.TEXTURE_2D, texture);
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, tileAsset.image);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
 
 			this.tileTextures.set(key, texture);
 		});
-
-		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		gl.enable(gl.BLEND);
-
 	}
 
 	private compileShader(source: string, shaderType: ShaderType) {

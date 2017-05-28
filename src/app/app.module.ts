@@ -8,7 +8,8 @@ import { AppComponent } from './app.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ResourceService, AssetLoaderService, LevelService  } from './shared/service';
 import { AssetResolve } from './shared/resolver/asset-resolve';
-import { TileSelectorComponent } from './components/tile-selector/tile-selector.component';
+import { EditorToolsComponent } from './components/editor-tools/editor-tools.component';
+import { OverviewComponent } from './components/overview/overview.component';
 
 const appRoutes: Routes = [
   {
@@ -25,7 +26,8 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     EditorComponent,
-    TileSelectorComponent
+    EditorToolsComponent,
+    OverviewComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes),

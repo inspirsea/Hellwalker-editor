@@ -1,4 +1,4 @@
-export class TileAsset {
+export class RenderableAsset {
     
     constructor(
         public key: number,

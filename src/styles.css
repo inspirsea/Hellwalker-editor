@@ -1,14 +1,33 @@
 /* You can add global styles to this file, and also import other style files */
 
+.no-select {
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+}
+
 .full-flex {
   display: flex;
   flex: 1 1;
+}
+
+.clickable {
+  cursor: pointer;
+
 }
 
 .input-number {
   margin: 5px 5px 5px 0;
   border-radius: 3px;
   width: 40px;
+}
+
+.input-number-large {
+  margin: 5px 5px 5px 0;
+  border-radius: 3px;
+  width: 60px;
 }
 
 .aligner {
@@ -120,4 +139,47 @@ input[type=range]:focus::-ms-fill-lower {
 input[type=range]:focus::-ms-fill-upper {
   background: #550000;
 }
+
+
+.squaredThree {
+  width: 20px;
+  position: relative;
+}
+.squaredThree label {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: -webkit-linear-gradient(top, #222222 0%, #45484d 100%);
+  background: linear-gradient(to bottom, #222222 0%, #45484d 100%);
+  border-radius: 4px;
+  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.4);
+}
+.squaredThree label:after {
+  content: '';
+  width: 9px;
+  height: 5px;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  border: 3px solid #fcfff4;
+  border-top: none;
+  border-right: none;
+  background: transparent;
+  opacity: 0;
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+}
+.squaredThree label:hover::after {
+  opacity: 0.3;
+}
+.squaredThree input[type=checkbox] {
+  visibility: hidden;
+}
+.squaredThree input[type=checkbox]:checked + label:after {
+  opacity: 1;
+}
+
 

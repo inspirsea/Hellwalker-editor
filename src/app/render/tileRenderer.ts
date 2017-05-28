@@ -1,6 +1,6 @@
 import { Context } from '../shared/context';
 import { ResourceService } from '../shared/service';
-import { TileRenderCall } from '../shared/model';
+import { RenderCall } from '../shared/model';
 
 export class TileRenderer {
 
@@ -14,8 +14,9 @@ export class TileRenderer {
 	private positionLocation: number;
 	private textureCoordAttribute: number;
 	private resolutionLocation : WebGLUniformLocation;
+	private cameraLocation: WebGLUniformLocation;
 
-    constructor(private context: Context, private resourceService: ResourceService) {
+    constructor(private context: Context, public resolution: [number, number]) {
 		this.gl = this.context.gl;
 		this.shaderProgram = this.context.editorShaderProgram;
 		this.gl.useProgram(this.shaderProgram);
@@ -27,13 +28,14 @@ export class TileRenderer {
 		this.textureCoordAttribute = this.gl.getAttribLocation(this.shaderProgram, "a_texture_coord");
 		
 		this.resolutionLocation = this.gl.getUniformLocation(this.shaderProgram, "u_resolution");
+		this.cameraLocation = this.gl.getUniformLocation(this.shaderProgram, "u_camera");
 
 		this.vertexBuffer = this.gl.createBuffer();
 		this.textureCoordBuffer = this.gl.createBuffer();
 		this.indeciesBuffer = this.gl.createBuffer();
     }
 
-	public render(renderCalls: TileRenderCall[]) {
+	public render(renderCalls: RenderCall[], camera: [number, number]) {
 		this.gl.useProgram(this.shaderProgram);
 		for(let renderCall of renderCalls) {
 			
@@ -55,10 +57,11 @@ export class TileRenderer {
 			this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureCoordBuffer);
 			this.gl.vertexAttribPointer(this.textureCoordAttribute, 2, this.gl.FLOAT, false, 0, 0);
 
-			this.gl.uniform2f(this.resolutionLocation, this.resourceService.canvasWidth, this.resourceService.canvasHeight);
+			this.gl.uniform2f(this.resolutionLocation, this.resolution[0], this.resolution[1]);
+			this.gl.uniform2f(this.cameraLocation, camera[0], camera[1]);
 
 			this.gl.activeTexture(this.gl.TEXTURE0);
-			this.gl.bindTexture(this.gl.TEXTURE_2D, this.context.tileTextures.get(renderCall.tileKey));
+			this.gl.bindTexture(this.gl.TEXTURE_2D, this.context.tileTextures.get(renderCall.textureKey));
 			
 			this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indeciesBuffer);
 			this.gl.drawElements(this.gl.TRIANGLES, renderCall.indecies.length, this.gl.UNSIGNED_SHORT, 0)
