@@ -6,6 +6,7 @@ import { TileRenderer } from '../../render/tileRenderer';
 import { RenderCall, Renderable, Rectangle, Asset, RenderableSet, Block, BlockType, DynamicRenderable, DynamicRenderableSet } from '../../shared/model';
 import { RenderHelper } from '../../shared/utils/render-helper';
 import { ExportHelper } from '../../shared/utils/export-helper';
+import { CollisionHelper } from '../../shared/utils/collision-helper';
 import { Observable } from 'rxjs';
 import { EditorToolsComponent } from '../editor-tools/editor-tools.component';
 
@@ -26,6 +27,7 @@ export class EditorComponent implements OnInit {
   private context: Context;
   private renderHelper = RenderHelper.getInstance();
   private exportHelper = ExportHelper.getInstance();
+  private collisionHelper = CollisionHelper.getInstance();
   public mousePosition: [number, number] = [0, 0];
 
   constructor(private route: ActivatedRoute, private resourceService: ResourceService, private levelService: LevelService) { }
@@ -46,6 +48,10 @@ export class EditorComponent implements OnInit {
 
     let renderCalls: RenderCall[] = [];
     this.levelService.level.tiles.forEach((value: RenderableSet, key: number) => {
+      renderCalls.push(this.renderHelper.getTileTypeRenderCall(key, value));
+    });
+
+    this.levelService.level.decorativeTiles.forEach((value: RenderableSet, key: number) => {
       renderCalls.push(this.renderHelper.getTileTypeRenderCall(key, value));
     });
 
@@ -98,8 +104,8 @@ export class EditorComponent implements OnInit {
     let width: number;
     let height: number;
 
-    if(block.vertical) {
-      if(block.inverted) {
+    if (block.vertical) {
+      if (block.inverted) {
         renderCall.textureKey = 101;
         width = block.blockSize[0];
         height = block.distance;
@@ -111,7 +117,7 @@ export class EditorComponent implements OnInit {
         position[1] = position[1] + block.blockSize[1];
       }
     } else {
-      if(block.inverted) {
+      if (block.inverted) {
         renderCall.textureKey = 104;
         width = block.distance;
         height = block.blockSize[1];
@@ -140,6 +146,8 @@ export class EditorComponent implements OnInit {
     if (this.block) {
       if (this.block.type == BlockType.Tile) {
         this.addToLevel(this.levelService.level.tiles, this.block);
+      } else if(this.block.type == BlockType.Decorative) {
+        this.addToLevel(this.levelService.level.decorativeTiles, this.block);
       } else if (this.block.type == BlockType.Enemy) {
         this.addToLevel(this.levelService.level.enemies, this.block);
       } else if (this.block.type == BlockType.Player) {
@@ -188,6 +196,44 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  private deleteFromLevel(map: Map<number, RenderableSet>, mouseArea: Rectangle) {
+
+    map.forEach((value: RenderableSet, key: number) => {
+      let removeList: Renderable[] = [];
+      for (let renderable of value.renderables) {
+        if (this.collisionHelper.aabbCheck(renderable.area, mouseArea)) {
+          removeList.push(renderable);
+        }
+      }
+
+      this.remove(removeList, value.renderables);
+    });
+
+  }
+
+  private deleteDynamic(map: Map<number, DynamicRenderableSet>, mouseArea: Rectangle) {
+    map.forEach((value: DynamicRenderableSet, key: number) => {
+      let removeList: Renderable[] = [];
+      for (let renderable of value.renderables) {
+        if (this.collisionHelper.aabbCheck(renderable.area, mouseArea)) {
+          removeList.push(renderable);
+        }
+      }
+
+      this.remove(removeList, value.renderables);
+    });
+  }
+
+  private remove(removeList: object[], mainList: object[]) {
+    for (let remove of removeList) {
+      let index = mainList.indexOf(remove);
+
+      if (index != -1) {
+        mainList.splice(index, 1);
+      }
+    }
+  }
+
   private newRenderable(block: Block) {
     let position = this.getCurrentPosition();
 
@@ -213,6 +259,18 @@ export class EditorComponent implements OnInit {
     return Math.round(position / this.gridSize) * this.gridSize;
   }
 
+  private delete() {
+    let currentPosition = this.getCurrentPosition();
+    let mouseCollisionArea = new Rectangle(currentPosition[0], currentPosition[1], 1, 1);
+
+    this.deleteFromLevel(this.levelService.level.tiles, mouseCollisionArea);
+    this.deleteFromLevel(this.levelService.level.enemies, mouseCollisionArea);
+    this.deleteFromLevel(this.levelService.level.player, mouseCollisionArea);
+    this.deleteFromLevel(this.levelService.level.end, mouseCollisionArea);
+    this.deleteDynamic(this.levelService.level.dynamicTiles, mouseCollisionArea);
+
+  }
+
   @HostListener('mousemove', ['$event'])
   onMousemove(event: MouseEvent) {
     let editrorElement = this.canvas.nativeElement.getBoundingClientRect();
@@ -220,5 +278,12 @@ export class EditorComponent implements OnInit {
     let y = event.clientY - editrorElement.top;
 
     this.mousePosition = [x, y];
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  private onkeydown(event: KeyboardEvent) {
+    if (event.keyCode == 46) {
+      this.delete();
+    }
   }
 }

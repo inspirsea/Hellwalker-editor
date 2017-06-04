@@ -60,6 +60,7 @@ export class ExportHelper {
         }
 
         levelData.tiles = this.toRenderableData(level.tiles);
+        levelData.decorativeTiles = this.toRenderableData(level.decorativeTiles);
         levelData.enemies = this.toRenderableData(level.enemies);
         levelData.dynamicTiles = this.toDynamicRenderableData(level.dynamicTiles);
         levelData.player = [player.area.x, player.area.y];

@@ -56,6 +56,10 @@ export class OverviewComponent implements OnInit {
       renderCalls.push(this.renderHelper.getEnemyRenderCall(key, value));
     });
 
+    this.levelService.level.dynamicTiles.forEach((value: RenderableSet, key: number) => {
+      renderCalls.push(this.renderHelper.getEnemyRenderCall(key, value));
+    });
+
     renderCalls.push(this.getWindowRenderCall());
 
     this.tileRenderer.render(renderCalls, [0, 0]);

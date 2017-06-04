@@ -39,6 +39,20 @@ export class EditorToolsComponent implements OnChanges {
 
   private _dynamicTile = false;
 
+  public set decorative(value: boolean) {
+    this._decorative = value;
+
+    if(this.block.type == BlockType.Tile || this.block.type == BlockType.Decorative) {
+      this.block.type = value ? BlockType.Decorative : BlockType.Tile;
+    }
+  }
+
+  public get decorative() {
+    return this._decorative;
+  }
+
+  private _decorative = false;
+
   public set gridSize(value: number) {
     this._gridSize = value;
     this.gridSizeChanged.emit(this._gridSize);
@@ -97,6 +111,8 @@ export class EditorToolsComponent implements OnChanges {
   public setTile(renderableAsset: RenderableAsset) {
     if(this.dynamicTile) {
       this.setBlock(renderableAsset, BlockType.DynamicTile);
+    } if(this.decorative){
+      this.setBlock(renderableAsset, BlockType.Decorative);
     } else {
       this.setBlock(renderableAsset, BlockType.Tile);
     }

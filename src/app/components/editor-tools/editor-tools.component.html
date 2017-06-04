@@ -34,8 +34,12 @@
       </div>
 
       <div style="padding-top: 5px; display: flex; flex: 1 1; flex-direction: row">
-        <div class="full-flex">
+        <div class="full-flex" *ngIf="!decorative">
           Lift
+        </div>
+
+        <div class="full-flex" *ngIf="!dynamicTile">
+          Decorative
         </div>
 
         <div class="full-flex" *ngIf="dynamicTile">
@@ -57,9 +61,14 @@
 
       <div style="display: flex; flex: 1 1; flex-direction: row">
 
-        <div class="squaredThree full-flex">
+        <div class="squaredThree full-flex" *ngIf="!decorative">
           <input type="checkbox" id="squaredThree" [(ngModel)]="dynamicTile" />
           <label for="squaredThree"></label>
+        </div>
+
+        <div class="squaredThree full-flex" *ngIf="!dynamicTile">
+          <input type="checkbox" id="decorative" [(ngModel)]="decorative" />
+          <label for="decorative"></label>
         </div>
 
         <div class="squaredThree full-flex" *ngIf="dynamicTile">
