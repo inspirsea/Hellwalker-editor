@@ -52,7 +52,7 @@ export class ExportHelper {
 
         let endColl = this.toRenderableData(level.end);
         let end: RenderableData;
-        if(playerColl.length > 0) {
+        if(endColl.length > 0) {
             end = endColl[0];
         } else {
             end = new RenderableData();
