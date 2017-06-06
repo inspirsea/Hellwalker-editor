@@ -28,9 +28,9 @@ export class EditorToolsComponent implements OnChanges {
   public set dynamicTile(value: boolean) {
     this._dynamicTile = value;
 
-    if(this.block.type == BlockType.Tile || this.block.type == BlockType.DynamicTile) {
+    if(this.ifBlockTypeTile()) {
       this.block.type = value ? BlockType.DynamicTile : BlockType.Tile;
-    }
+    };
   }
 
   public get dynamicTile() {
@@ -39,12 +39,26 @@ export class EditorToolsComponent implements OnChanges {
 
   private _dynamicTile = false;
 
+  public set background(value: boolean) {
+    this._background = value;
+
+    if(this.ifBlockTypeTile()) {
+      this.block.type = value ? BlockType.BackGround : BlockType.Tile;
+    };
+  }
+
+  public get background() {
+    return this._background;
+  }
+
+  private _background = false;
+
   public set decorative(value: boolean) {
     this._decorative = value;
 
-    if(this.block.type == BlockType.Tile || this.block.type == BlockType.Decorative) {
+    if(this.ifBlockTypeTile()) {
       this.block.type = value ? BlockType.Decorative : BlockType.Tile;
-    }
+    };
   }
 
   public get decorative() {
@@ -82,7 +96,7 @@ export class EditorToolsComponent implements OnChanges {
 
   ngOnChanges() {
 
-    this.gridSize = 10;
+    this.gridSize = 32;
 
     if (this.tileTextures) {
 
@@ -111,8 +125,10 @@ export class EditorToolsComponent implements OnChanges {
   public setTile(renderableAsset: RenderableAsset) {
     if(this.dynamicTile) {
       this.setBlock(renderableAsset, BlockType.DynamicTile);
-    } if(this.decorative){
+    } else if(this.decorative){
       this.setBlock(renderableAsset, BlockType.Decorative);
+    } else if(this.background) {
+      this.setBlock(renderableAsset, BlockType.BackGround);
     } else {
       this.setBlock(renderableAsset, BlockType.Tile);
     }
@@ -154,6 +170,10 @@ export class EditorToolsComponent implements OnChanges {
     })
 
     return tableList;
+  }
+
+  public ifBlockTypeTile() {
+    return (this.block.type == BlockType.Tile || this.block.type == BlockType.DynamicTile || this.block.type == BlockType.Decorative || this.block.type == BlockType.BackGround);
   }
 
 }

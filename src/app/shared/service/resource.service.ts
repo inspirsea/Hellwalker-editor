@@ -8,7 +8,7 @@ export class ResourceService {
   public asset: Asset;
   public resolution: [number, number] = [1200, 800];
   public overviewResolution: [number, number] = [600, 400];
-  public gameSize: [number, number] = [1200, 800];
+  public gameSize: [number, number] = [2400, 1600];
   public camera: [number, number] = [0, 0];
   public textureResources: TextureResource[] = [
     new TextureResource("1tile.png", [32, 32]),
@@ -30,6 +30,13 @@ export class ResourceService {
     new TextureResource("17tile.png", [32, 32]),
     new TextureResource("18tile.png", [32, 32]),
     new TextureResource("19tile.png", [32, 32]),
+    new TextureResource("20tile.png", [32, 32]),
+    new TextureResource("21tile.png", [32, 32]),
+    new TextureResource("22tile.png", [32, 32]),
+    new TextureResource("23tile.png", [32, 32]),
+    new TextureResource("24tile.png", [32, 32]),
+    new TextureResource("25tile.png", [32, 32]),
+    new TextureResource("26tile.png", [32, 32])
   ];
 
   public enemyTextureResources: TextureResource[] = [

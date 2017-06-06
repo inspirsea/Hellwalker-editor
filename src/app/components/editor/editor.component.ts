@@ -6,10 +6,11 @@ import { TileRenderer } from '../../render/tileRenderer';
 import { RenderCall, Renderable, Rectangle, Asset, RenderableSet, Block, BlockType, DynamicRenderable, DynamicRenderableSet } from '../../shared/model';
 import { RenderHelper } from '../../shared/utils/render-helper';
 import { ExportHelper } from '../../shared/utils/export-helper';
+import { LocalStorageHelper } from '../../shared/utils/local-storage-helper';
 import { CollisionHelper } from '../../shared/utils/collision-helper';
 import { Observable } from 'rxjs';
 import { EditorToolsComponent } from '../editor-tools/editor-tools.component';
-
+import { ModalComponent } from '../modal/modal.component';
 
 @Component({
   selector: 'app-editor',
@@ -18,6 +19,7 @@ import { EditorToolsComponent } from '../editor-tools/editor-tools.component';
 })
 export class EditorComponent implements OnInit {
 
+  @ViewChild('savemodal') saveModal: ModalComponent;
   @ViewChild('canvas') canvas: ElementRef;
   @ViewChild('editortools') editorTools: EditorToolsComponent;
 
@@ -28,7 +30,9 @@ export class EditorComponent implements OnInit {
   private renderHelper = RenderHelper.getInstance();
   private exportHelper = ExportHelper.getInstance();
   private collisionHelper = CollisionHelper.getInstance();
+  private localStorageHelper = LocalStorageHelper.getInstance();
   public mousePosition: [number, number] = [0, 0];
+  public levelName = "";
 
   constructor(private route: ActivatedRoute, private resourceService: ResourceService, private levelService: LevelService) { }
 
@@ -47,6 +51,11 @@ export class EditorComponent implements OnInit {
   public render() {
 
     let renderCalls: RenderCall[] = [];
+
+    this.levelService.level.background.forEach((value: RenderableSet, key: number) => {
+      renderCalls.push(this.renderHelper.getTileTypeRenderCall(key, value));
+    });
+
     this.levelService.level.tiles.forEach((value: RenderableSet, key: number) => {
       renderCalls.push(this.renderHelper.getTileTypeRenderCall(key, value));
     });
@@ -85,6 +94,10 @@ export class EditorComponent implements OnInit {
 
   public export() {
     this.exportHelper.export(this.levelService.level, this.resourceService.camera, this.resourceService.gameSize);
+  }
+
+  public save() {
+    this.localStorageHelper.saveLevel(this.levelName, this.resourceService.camera, this.resourceService.gameSize, this.levelService.level);
   }
 
   private getDynamicTileArrowRenderCall(block: Block) {
@@ -148,6 +161,9 @@ export class EditorComponent implements OnInit {
         this.addToLevel(this.levelService.level.tiles, this.block);
       } else if(this.block.type == BlockType.Decorative) {
         this.addToLevel(this.levelService.level.decorativeTiles, this.block);
+      } else if(this.block.type == BlockType.BackGround) {
+        this.levelService.level.background.clear();
+        this.addToLevel(this.levelService.level.background, this.block, true);
       } else if (this.block.type == BlockType.Enemy) {
         this.addToLevel(this.levelService.level.enemies, this.block);
       } else if (this.block.type == BlockType.Player) {
@@ -184,10 +200,10 @@ export class EditorComponent implements OnInit {
     return renderable;
   }
 
-  private addToLevel(map: Map<number, RenderableSet>, block: Block) {
+  private addToLevel(map: Map<number, RenderableSet>, block: Block, fullScreen?: boolean) {
     let set = map.get(block.key);
 
-    let newRenderable = this.newRenderable(this.block);
+    let newRenderable = this.newRenderable(this.block, fullScreen);
 
     if (set) {
       set.renderables.push(newRenderable);
@@ -234,7 +250,7 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  private newRenderable(block: Block) {
+  private newRenderable(block: Block, fullScreen?: boolean) {
     let position = this.getCurrentPosition();
 
     let renderable: Renderable;
@@ -242,7 +258,11 @@ export class EditorComponent implements OnInit {
     if (block.type == BlockType.Enemy || block.type == BlockType.Player || block.type == BlockType.End) {
       renderable = new Renderable(new Rectangle(this.getClosestGridPos(position[0]), this.getClosestGridPos(position[1]), block.textureSize[0], block.textureSize[1]));
     } else {
-      renderable = new Renderable(new Rectangle(this.getClosestGridPos(position[0]), this.getClosestGridPos(position[1]), block.blockSize[0], block.blockSize[1]));
+      if(fullScreen) {
+        renderable = new Renderable(new Rectangle(0, 0, this.resourceService.gameSize[0], this.resourceService.gameSize[0]));
+      } else {
+        renderable = new Renderable(new Rectangle(this.getClosestGridPos(position[0]), this.getClosestGridPos(position[1]), block.blockSize[0], block.blockSize[1]));
+      }
     }
 
     return renderable;

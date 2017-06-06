@@ -1,5 +1,5 @@
 <div style="display: flex; flex: 1 1; flex-direction: row; margin-left: 10px;">
-  <div class="full-flex" style="flex-direction: column">
+  <div class="full-flex" style="flex-direction: column; height: 820px; overflow: auto; border-bottom: 1px solid white;">
 
     <div *ngFor="let tileAssets of tileTableList;">
       <div style="display: inline-block;" *ngFor="let row of tileCollumns; let i = index;">
@@ -23,23 +23,27 @@
     </div>
 
     <div style="display: flex; flex: 0 0 235px; flex-direction: column;">
-      <div style="display: flex; flex: 1 1; flex-direction: row">
+      <div style="display: flex; flex: 1 1; flex-direction: row; width: 600px;">
         <input type="number" class="input-number" [(ngModel)]="block.blockSize[0]" />
-        <input type="range" max="500" [(ngModel)]="block.blockSize[0]" />
+        <input type="range" [step]="gridSize" max="1200" [(ngModel)]="block.blockSize[0]" />
       </div>
 
-      <div style="display: flex; flex: 1 1; flex-direction: row">
+      <div style="display: flex; flex: 1 1; flex-direction: row; width: 600px;">
         <input type="number" class="input-number" [(ngModel)]="block.blockSize[1]" />
-        <input type="range" max="500" [(ngModel)]="block.blockSize[1]">
+        <input type="range" [step]="gridSize" max="800" [(ngModel)]="block.blockSize[1]">
       </div>
 
-      <div style="padding-top: 5px; display: flex; flex: 1 1; flex-direction: row">
-        <div class="full-flex" *ngIf="!decorative">
+      <div style="padding-top: 5px; display: flex; flex: 1 1; flex-direction: row; width: 600px;">
+        <div class="full-flex" *ngIf="!decorative && !background">
           Lift
         </div>
 
-        <div class="full-flex" *ngIf="!dynamicTile">
+        <div class="full-flex" *ngIf="!dynamicTile && !background">
           Decorative
+        </div>
+
+        <div class="full-flex" *ngIf="!dynamicTile && !decorative">
+          Background
         </div>
 
         <div class="full-flex" *ngIf="dynamicTile">
@@ -59,16 +63,21 @@
         </div>
       </div>
 
-      <div style="display: flex; flex: 1 1; flex-direction: row">
+      <div style="display: flex; flex: 1 1; flex-direction: row; width: 600px;">
 
-        <div class="squaredThree full-flex" *ngIf="!decorative">
+        <div class="squaredThree full-flex" *ngIf="!decorative && !background">
           <input type="checkbox" id="squaredThree" [(ngModel)]="dynamicTile" />
           <label for="squaredThree"></label>
         </div>
 
-        <div class="squaredThree full-flex" *ngIf="!dynamicTile">
+        <div class="squaredThree full-flex" *ngIf="!dynamicTile && !background">
           <input type="checkbox" id="decorative" [(ngModel)]="decorative" />
           <label for="decorative"></label>
+        </div>
+
+        <div class="squaredThree full-flex" *ngIf="!dynamicTile && !decorative">
+          <input type="checkbox" id="background" [(ngModel)]="background" />
+          <label for="background"></label>
         </div>
 
         <div class="squaredThree full-flex" *ngIf="dynamicTile">
@@ -97,9 +106,9 @@
 
       </div>
 
-      <div style="border-top: 1px solid;"></div>
+      <div style="border-top: 1px solid; width: 600px;"></div>
 
-      <div style="display: flex; flex: 1 1; flex-direction: row">
+      <div style="display: flex; flex: 1 1; flex-direction: row; width: 600px;">
         <div class="full-flex" style="font-size: 18px; font-weight: bold">
           Gridsize
         </div>
@@ -111,7 +120,7 @@
         </div>
       </div>
 
-      <div style="display: flex; flex: 1 1; flex-direction: row">
+      <div style="display: flex; flex: 1 1; flex-direction: row; width: 600px;">
         <div class="full-flex">
           <input type="number" class="input-number" [(ngModel)]="gridSize" />
         </div>
@@ -129,8 +138,19 @@
 
     </div>
 
-    <div style="margin-left: -10px; display: flex; flex: 1 1; flex-direction: row">
-      <app-overview #overview class="full-flex"></app-overview>
+    <div style="margin-left: -10px; display: flex; flex: 1 1; flex-direction: row; min-height: 420px;">
+      <app-overview #overview class="full-flex; height: 400px;"></app-overview>
+    </div>
+
+    <div class="full-flex" style="flex-direction: column">
+      <div style="font-size: 18px; font-weight: bold">
+        Levels
+      </div>
+
+      <div>
+        asd
+      </div>
+
     </div>
 
   </div>

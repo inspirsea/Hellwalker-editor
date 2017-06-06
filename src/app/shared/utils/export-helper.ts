@@ -37,7 +37,7 @@ export class ExportHelper {
         downloadLink.click();
     }
 
-    private toLevelData(level: Level, camera: [number, number], gameSize: [number, number]) {
+    public toLevelData(level: Level, camera: [number, number], gameSize: [number, number]) {
 
         let levelData = new LevelData();
 
@@ -60,6 +60,7 @@ export class ExportHelper {
         }
 
         levelData.tiles = this.toRenderableData(level.tiles);
+        levelData.background = this.toRenderableData(level.background);
         levelData.decorativeTiles = this.toRenderableData(level.decorativeTiles);
         levelData.enemies = this.toRenderableData(level.enemies);
         levelData.dynamicTiles = this.toDynamicRenderableData(level.dynamicTiles);

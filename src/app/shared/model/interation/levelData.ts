@@ -4,6 +4,7 @@ import { DynamicTileData, RenderableData } from './';
 export class LevelData {
 	
 	public tiles: RenderableData[];
+	public background: RenderableData[];
 	public decorativeTiles: RenderableData[];
 	public dynamicTiles: DynamicTileData[];
 	public enemies: RenderableData[];

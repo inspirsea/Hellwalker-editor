@@ -1,0 +1,14 @@
+<div class="modal" *ngIf="show">
+
+    <div class="full-flex" style="height: 75px; flex-direction: column">
+        <ng-content></ng-content>
+
+        <div class="full-flex" style="justify-content: flex-end; flex-direction: column">
+            <div>
+                <span (click)="succes()" class="clickable modalbutton" style="margin-left: 20px;">{{succesName}}</span>
+                <span (click)="cancel()" class="clickable modalbutton">Cancel</span>
+            </div>
+        </div>
+    </div>
+
+</div>

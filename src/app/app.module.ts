@@ -10,6 +10,7 @@ import { ResourceService, AssetLoaderService, LevelService  } from './shared/ser
 import { AssetResolve } from './shared/resolver/asset-resolve';
 import { EditorToolsComponent } from './components/editor-tools/editor-tools.component';
 import { OverviewComponent } from './components/overview/overview.component';
+import { ModalComponent } from './components/modal/modal.component';
 
 const appRoutes: Routes = [
   {
@@ -27,7 +28,8 @@ const appRoutes: Routes = [
     AppComponent,
     EditorComponent,
     EditorToolsComponent,
-    OverviewComponent
+    OverviewComponent,
+    ModalComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
