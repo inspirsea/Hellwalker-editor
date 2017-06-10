@@ -126,29 +126,32 @@
         </div>
 
         <div class="full-flex">
-          <input type="number" class="input-number-large" (keyup)="renderOverview()" (change)="renderOverview()" [(ngModel)]="resourceService.gameSize[0]"
+          <input type="number" class="input-number-large" (keyup)="renderOverview()" (change)="renderOverview()" [(ngModel)]="levelService.level.gameSize[0]"
           />
         </div>
 
         <div class="full-flex">
-          <input type="number" class="input-number-large" (keyup)="renderOverview()" (change)="renderOverview()" [(ngModel)]="resourceService.gameSize[1]"
+          <input type="number" class="input-number-large" (keyup)="renderOverview()" (change)="renderOverview()" [(ngModel)]="levelService.level.gameSize[1]"
           />
         </div>
       </div>
-
     </div>
 
     <div style="margin-left: -10px; display: flex; flex: 1 1; flex-direction: row; min-height: 420px;">
       <app-overview #overview class="full-flex; height: 400px;"></app-overview>
     </div>
 
-    <div class="full-flex" style="flex-direction: column">
+    <div class="full-flex" style="flex-direction: column; width: 600px;">
       <div style="font-size: 18px; font-weight: bold">
         Levels
       </div>
 
-      <div>
-        asd
+      <div *ngFor="let level of levelService.levelCollection" (click)="loadLevel(level)" class="levelrow" [class.selected]="level == levelService.level">
+        {{level.name}}<span style="float: right" (click)="delete(level.name)">Delete</span>
+      </div>
+
+      <div (click)="clear()" class="levelrow">
+        Clear
       </div>
 
     </div>

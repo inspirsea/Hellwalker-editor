@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener, Renderer2 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Context } from '../../shared/context';
 import { ResourceService, LevelService } from '../../shared/service';
@@ -6,6 +6,7 @@ import { TileRenderer } from '../../render/tileRenderer';
 import { RenderCall, Renderable, Rectangle, Asset, RenderableSet, Block, BlockType, DynamicRenderable, DynamicRenderableSet } from '../../shared/model';
 import { RenderHelper } from '../../shared/utils/render-helper';
 import { ExportHelper } from '../../shared/utils/export-helper';
+import { ImportHelper } from '../../shared/utils/import-helper';
 import { LocalStorageHelper } from '../../shared/utils/local-storage-helper';
 import { CollisionHelper } from '../../shared/utils/collision-helper';
 import { Observable } from 'rxjs';
@@ -22,6 +23,7 @@ export class EditorComponent implements OnInit {
   @ViewChild('savemodal') saveModal: ModalComponent;
   @ViewChild('canvas') canvas: ElementRef;
   @ViewChild('editortools') editorTools: EditorToolsComponent;
+  @ViewChild('importLink') importLink: ElementRef;
 
   public block: Block;
   public gridSize: number;
@@ -29,12 +31,12 @@ export class EditorComponent implements OnInit {
   private context: Context;
   private renderHelper = RenderHelper.getInstance();
   private exportHelper = ExportHelper.getInstance();
+  private importHelper = ImportHelper.getInstance();
   private collisionHelper = CollisionHelper.getInstance();
   private localStorageHelper = LocalStorageHelper.getInstance();
   public mousePosition: [number, number] = [0, 0];
-  public levelName = "";
 
-  constructor(private route: ActivatedRoute, private resourceService: ResourceService, private levelService: LevelService) { }
+  constructor(private route: ActivatedRoute, private resourceService: ResourceService, private levelService: LevelService, private renderer2: Renderer2) { }
 
   ngOnInit() {
     this.resourceService.asset = this.route.snapshot.data['asset'];
@@ -44,6 +46,17 @@ export class EditorComponent implements OnInit {
 
     Observable.interval(50).subscribe(() => {
       this.render();
+    });
+
+    this.renderer2.listen(this.importLink.nativeElement, 'change', (evt) => {
+      let editorComp = this;
+      let fileReader = new FileReader();
+      fileReader.onload = (evt: ProgressEvent) => {
+        let target = evt.target as FileReader;
+        this.levelService.level = this.importHelper.import(target.result, this.resourceService);
+      }
+
+      fileReader.readAsText(this.importLink.nativeElement.files[0], "UTF-8")
     });
 
   }
@@ -88,16 +101,24 @@ export class EditorComponent implements OnInit {
       }
     }
 
-    this.rendere.render(renderCalls, this.resourceService.camera);
+    this.rendere.render(renderCalls, this.levelService.level.camera);
     this.editorTools.renderOverview();
   }
 
   public export() {
-    this.exportHelper.export(this.levelService.level, this.resourceService.camera, this.resourceService.gameSize);
+    this.exportHelper.export(this.levelService.level, this.levelService.level.camera, this.levelService.level.gameSize);
+  }
+
+  public import() {
+    this.importLink.nativeElement.click();
   }
 
   public save() {
-    this.localStorageHelper.saveLevel(this.levelName, this.resourceService.camera, this.resourceService.gameSize, this.levelService.level);
+    if (this.levelService.level.name != null) {
+      this.localStorageHelper.saveLevel(this.levelService.level.name, this.levelService.level.camera, this.levelService.level.gameSize, this.levelService.level);
+      this.levelService.loadLevels(this.resourceService);
+      this.levelService.level = this.levelService.levelCollection.find(it => it.name == this.levelService.level.name);
+    }
   }
 
   private getDynamicTileArrowRenderCall(block: Block) {
@@ -159,9 +180,9 @@ export class EditorComponent implements OnInit {
     if (this.block) {
       if (this.block.type == BlockType.Tile) {
         this.addToLevel(this.levelService.level.tiles, this.block);
-      } else if(this.block.type == BlockType.Decorative) {
+      } else if (this.block.type == BlockType.Decorative) {
         this.addToLevel(this.levelService.level.decorativeTiles, this.block);
-      } else if(this.block.type == BlockType.BackGround) {
+      } else if (this.block.type == BlockType.BackGround) {
         this.levelService.level.background.clear();
         this.addToLevel(this.levelService.level.background, this.block, true);
       } else if (this.block.type == BlockType.Enemy) {
@@ -258,8 +279,8 @@ export class EditorComponent implements OnInit {
     if (block.type == BlockType.Enemy || block.type == BlockType.Player || block.type == BlockType.End) {
       renderable = new Renderable(new Rectangle(this.getClosestGridPos(position[0]), this.getClosestGridPos(position[1]), block.textureSize[0], block.textureSize[1]));
     } else {
-      if(fullScreen) {
-        renderable = new Renderable(new Rectangle(0, 0, this.resourceService.gameSize[0], this.resourceService.gameSize[0]));
+      if (fullScreen) {
+        renderable = new Renderable(new Rectangle(0, 0, this.levelService.level.gameSize[0], this.levelService.level.gameSize[0]));
       } else {
         renderable = new Renderable(new Rectangle(this.getClosestGridPos(position[0]), this.getClosestGridPos(position[1]), block.blockSize[0], block.blockSize[1]));
       }
@@ -269,8 +290,8 @@ export class EditorComponent implements OnInit {
   }
 
   private getCurrentPosition() {
-    let x = this.mousePosition[0] + this.resourceService.camera[0];
-    let y = this.mousePosition[1] + this.resourceService.camera[1];
+    let x = this.mousePosition[0] + this.levelService.level.camera[0];
+    let y = this.mousePosition[1] + this.levelService.level.camera[1];
 
     return [x, y];
   }

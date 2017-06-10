@@ -1,5 +1,5 @@
 import { RenderCall, Renderable, Rectangle, RenderableSet, Level, DynamicRenderable, DynamicRenderableSet } from '../../shared/model';
-import { LevelData, RenderableData, DynamicTileData } from '../../shared/model/interation';
+import { LevelData, RenderableData, DynamicTileData } from '../../shared/model/integration';
 
 export class ExportHelper {
 
@@ -24,7 +24,7 @@ export class ExportHelper {
         let jsonLevel = JSON.stringify(levelData);
         let blob = new Blob([jsonLevel], { type: "application/json" });
         let textToSaveAsURL = window.URL.createObjectURL(blob);
-        let fileNameToSaveAs = "level" + Date.now() + ".json";
+        let fileNameToSaveAs = level.name + ".json";
 
         let downloadLink = document.createElement("a");
         downloadLink.download = fileNameToSaveAs;
@@ -59,15 +59,22 @@ export class ExportHelper {
             end.area = new Rectangle(500, 500, 0, 0);
         }
 
+        let backgroundData = this.toRenderableData(level.background);
+        let background: RenderableData;
+        if(backgroundData.length > 0) {
+            background = backgroundData[0];
+        }
+
         levelData.tiles = this.toRenderableData(level.tiles);
-        levelData.background = this.toRenderableData(level.background);
         levelData.decorativeTiles = this.toRenderableData(level.decorativeTiles);
         levelData.enemies = this.toRenderableData(level.enemies);
         levelData.dynamicTiles = this.toDynamicRenderableData(level.dynamicTiles);
+        levelData.background = background;
         levelData.player = [player.area.x, player.area.y];
         levelData.camera = [camera[0], camera[1]];
         levelData.gameSize = [gameSize[0], gameSize[1]];
         levelData.end = [end.area.x, end.area.y];
+        levelData.name = level.name;
 
         return levelData;
     }

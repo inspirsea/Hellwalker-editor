@@ -31,13 +31,13 @@ export class OverviewComponent implements OnInit {
   ngOnInit() {
     this.context = new Context(this.resourceService.asset, this.resourceService.overviewResolution[0], this.resourceService.overviewResolution[1], this.overview.nativeElement);
 
-    this.tileRenderer = new TileRenderer(this.context, this.calculateResolution(this.resourceService.gameSize));
+    this.tileRenderer = new TileRenderer(this.context, this.calculateResolution(this.levelService.level.gameSize));
 
   }
 
   public render() {
 
-    this.tileRenderer = new TileRenderer(this.context, this.calculateResolution(this.resourceService.gameSize));
+    this.tileRenderer = new TileRenderer(this.context, this.calculateResolution(this.levelService.level.gameSize));
 
     let renderCalls: RenderCall[] = [];
     this.levelService.level.tiles.forEach((value: RenderableSet, key: number) => {
@@ -68,28 +68,25 @@ export class OverviewComponent implements OnInit {
   public changeCamera() {
 
     if (this.mouseDown) {
-
-      this.resourceService.camera[0] = this.getWindowWidthPosition(0);
-      this.resourceService.camera[1] = this.getWindowWidthPosition(1);
-
-
+      this.levelService.level.camera[0] = this.getWindowWidthPosition(0);
+      this.levelService.level.camera[1] = this.getWindowWidthPosition(1);
     }
 
   }
 
   private getWindowWidthPosition(index: number) {
 
-    let cameraFactor = this.resourceService.resolution[index] / this.resourceService.gameSize[index];
+    let cameraFactor = this.resourceService.resolution[index] / this.levelService.level.gameSize[index];
     let maxWindowFactor = 1 - cameraFactor;
 
-    let currentPos = this.overViewMousePos[index] / this.resourceService.gameSize[index];
+    let currentPos = this.overViewMousePos[index] / this.levelService.level.gameSize[index];
 
     if (currentPos < 0) {
       return 0;
     } else if (currentPos < maxWindowFactor) {
       return this.overViewMousePos[index];
     } else {
-      return this.resourceService.gameSize[index] * maxWindowFactor;
+      return this.levelService.level.gameSize[index] * maxWindowFactor;
     }
   }
 
@@ -98,9 +95,9 @@ export class OverviewComponent implements OnInit {
   private getWindowRenderCall() {
     let renderCall = new RenderCall();
     renderCall.textureKey = 100;
-    let windowWidth = this.resourceService.gameSize[0] * (this.resourceService.resolution[0] / this.resourceService.gameSize[0]);
-    let windowHeight = this.resourceService.gameSize[1] * this.resourceService.resolution[1] / this.resourceService.gameSize[1];
-    let tile = new Renderable(new Rectangle(this.resourceService.camera[0], this.resourceService.camera[1], windowWidth, windowHeight));
+    let windowWidth = this.levelService.level.gameSize[0] * (this.resourceService.resolution[0] / this.levelService.level.gameSize[0]);
+    let windowHeight = this.levelService.level.gameSize[1] * this.resourceService.resolution[1] / this.levelService.level.gameSize[1];
+    let tile = new Renderable(new Rectangle(this.levelService.level.camera[0], this.levelService.level.camera[1], windowWidth, windowHeight));
     this.renderHelper.getEditorUtilRenderCoords(renderCall, tile);
 
     return renderCall;
@@ -136,8 +133,8 @@ export class OverviewComponent implements OnInit {
     let widthFactor = x / this.resourceService.overviewResolution[0];
     let heightFactor = y / this.resourceService.overviewResolution[1];
 
-    let relPosX = this.resourceService.gameSize[0] * widthFactor;
-    let relPosY = this.resourceService.gameSize[1] * heightFactor;
+    let relPosX = this.levelService.level.gameSize[0] * widthFactor;
+    let relPosY = this.levelService.level.gameSize[1] * heightFactor;
 
     this.overViewMousePos = [relPosX, relPosY];
   }

@@ -38,9 +38,9 @@ const appRoutes: Routes = [
     HttpModule
   ],
   providers: [
+    ResourceService,
     AssetResolve,
     AssetLoaderService,
-    ResourceService,
     LevelService
   ],
   bootstrap: [AppComponent]

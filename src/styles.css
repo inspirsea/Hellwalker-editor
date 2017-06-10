@@ -216,3 +216,13 @@ input[type=text] {
     padding: 5px;
 }
 
+.selected {
+  color: black;
+  background-color: #ed490a;
+}
+
+.levelrow {
+  padding: 5px;
+  border-radius: 2px;
+}
+

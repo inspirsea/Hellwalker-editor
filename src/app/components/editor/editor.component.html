@@ -7,10 +7,18 @@
     </div>
   </div>
   <div style="width: 1200px" class="full-flex">
-    <span style="color: #ed490a;" class="full-flex"><span class="clickable" (click)="export()">Export</span></span><span style="color: #ed490a;" class="full-flex"><span class="clickable" (click)="saveModal.open()">Save</span></span><span class="full-flex">{{mousePosition[0]}}, y: {{mousePosition[1]}}</span> 
+    <span style="color: #ed490a;" class="full-flex"><span class="clickable" (click)="exportModal.open()">Export</span></span>
+    <span style="color: #ed490a;" class="full-flex"><span class="clickable" (click)="import()">Import</span></span>
+    <span style="color: #ed490a;" class="full-flex"><span class="clickable" (click)="saveModal.open()">Save</span></span>
+    <span class="full-flex">{{mousePosition[0]}}, y: {{mousePosition[1]}}</span> 
+    <input hidden type="file" accept=".json" #importLink>
   </div>
 </div>
 
+<modal #exportModal (onSucces)="export()" [succesName]="'Export'">
+  <input class="form-controll" placeholder="Level name..." type="text" [(ngModel)]="levelService.level.name">
+</modal>
+
 <modal #savemodal (onSucces)="save()" [succesName]="'Save'">
-  <input class="form-controll" placeholder="Level name..." type="text" [(ngModel)]="levelName">
+  <input class="form-controll" placeholder="Level name..." type="text" [(ngModel)]="levelService.level.name">
 </modal>

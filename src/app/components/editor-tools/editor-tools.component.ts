@@ -1,7 +1,8 @@
 import { Component, OnChanges, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { Asset, RenderableAsset, Block, BlockType } from '../../shared/model';
-import { ResourceService } from '../../shared/service';
+import { Asset, RenderableAsset, Block, BlockType, Level } from '../../shared/model';
+import { ResourceService, LevelService } from '../../shared/service';
 import { OverviewComponent } from '../overview/overview.component';
+import { LocalStorageHelper } from '../../shared/utils/local-storage-helper';
 
 @Component({
   selector: 'app-editor-tools',
@@ -90,9 +91,13 @@ export class EditorToolsComponent implements OnChanges {
   private _block: Block;
   private tileCollumns: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   private enemyCollumns: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  private localStorageHelper = LocalStorageHelper.getInstance();
 
+  constructor(private resourceService: ResourceService, private levelService: LevelService) { }
 
-  constructor(private resourceService: ResourceService) { }
+  ngOnInit() {
+    this.levelService.loadLevels(this.resourceService);
+  }
 
   ngOnChanges() {
 
@@ -116,6 +121,19 @@ export class EditorToolsComponent implements OnChanges {
     if(this.endTexture) {
       this.endAsset = this.createTableStructure(this.endTexture, 1)[0][0];
     }
+  }
+
+  public loadLevel(level: Level) {
+    this.levelService.level = level;
+  }
+
+  public delete(name: string) {
+    this.localStorageHelper.deleteLevel(name);
+    this.levelService.loadLevels(this.resourceService);
+  }
+
+  public clear() {
+    this.levelService.newLevel();
   }
 
   public renderOverview() {
