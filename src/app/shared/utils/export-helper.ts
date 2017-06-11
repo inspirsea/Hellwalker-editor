@@ -60,7 +60,7 @@ export class ExportHelper {
         }
 
         let backgroundData = this.toRenderableData(level.background);
-        let background: RenderableData;
+        let background: RenderableData = null;
         if(backgroundData.length > 0) {
             background = backgroundData[0];
         }
