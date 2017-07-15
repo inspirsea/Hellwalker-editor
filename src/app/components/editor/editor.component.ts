@@ -36,7 +36,7 @@ export class EditorComponent implements OnInit {
   private localStorageHelper = LocalStorageHelper.getInstance();
   public mousePosition: [number, number] = [0, 0];
 
-  constructor(private route: ActivatedRoute, private resourceService: ResourceService, private levelService: LevelService, private renderer2: Renderer2) { }
+  constructor(public levelService: LevelService, public resourceService: ResourceService, private route: ActivatedRoute, private renderer2: Renderer2) { }
 
   ngOnInit() {
     this.resourceService.asset = this.route.snapshot.data['asset'];
@@ -176,7 +176,7 @@ export class EditorComponent implements OnInit {
     return renderCall;
   }
 
-  private addBlock() {
+  public addBlock() {
     if (this.block) {
       if (this.block.type == BlockType.Tile) {
         this.addToLevel(this.levelService.level.tiles, this.block);

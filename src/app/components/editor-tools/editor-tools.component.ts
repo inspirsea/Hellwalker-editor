@@ -93,7 +93,7 @@ export class EditorToolsComponent implements OnChanges {
   private enemyCollumns: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   private localStorageHelper = LocalStorageHelper.getInstance();
 
-  constructor(private resourceService: ResourceService, private levelService: LevelService) { }
+  constructor(private resourceService: ResourceService, public levelService: LevelService) { }
 
   ngOnInit() {
     this.levelService.loadLevels(this.resourceService);

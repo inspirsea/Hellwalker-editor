@@ -12,7 +12,7 @@ export class ModalComponent {
     @Output() onSucces = new EventEmitter<void>();
     @Output() onCancel = new EventEmitter<void>();
 
-    private show = false;
+    public show = false;
 
     public open() {
         this.show = true;

@@ -14,13 +14,12 @@ import { ModalComponent } from './components/modal/modal.component';
 
 const appRoutes: Routes = [
   {
-    path: "edit",
+    path: "**",
     component: EditorComponent,
     resolve: {
       asset: AssetResolve
     }
-  },
-  { path: "**", redirectTo: "edit" }
+  }
 ];
 
 @NgModule({
